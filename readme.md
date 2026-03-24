@@ -1,6 +1,6 @@
-# ProfileAI
+# Digital Persona
 
-ProfileAI is a conversational AI tool that allows you to chat with any LinkedIn profile. It scrapes a user's public LinkedIn data, processes it into a structured knowledge base, and uses a Retrieval-Augmented Generation (RAG) model to answer your questions about their career, skills, experience, and more.
+Digital Persona is a conversational AI tool that allows you to chat with any LinkedIn profile. It scrapes a user's public LinkedIn data, processes it into a structured knowledge base, and uses a Retrieval-Augmented Generation (RAG) model to answer your questions about their career, skills, experience, and more.
 
 ## Architecture
 
@@ -49,7 +49,7 @@ Follow these steps to get the project running locally.
     ```
 
 ### Documentation
-*   To learn more about the endpoints [LINK]()
+*   To learn more about the endpoints [LINK](https://drive.google.com/file/d/1DoVjv-SwdMSXdq2h2m0XfAgmqkO070K9/view?usp=sharing)
 
 ### Working Flow chart
 ![alt text](extras/image.png)
