@@ -52,7 +52,7 @@ Follow these steps to get the project running locally.
 *   To learn more about the endpoints [LINK]()
 
 ### Working Flow chart
-[View on Eraser![](https://app.eraser.io/workspace/hGaWeesARHTgob63bcWF/preview?diagram=Y5WvCKk5687o0pijD8usO&type=embed)](https://app.eraser.io/workspace/hGaWeesARHTgob63bcWF?diagram=Y5WvCKk5687o0pijD8usO)
+![alt text](extras/image.png)
 
 ### 1. Clone the Repository
 
