@@ -1,0 +1,23 @@
+Journey
+
+Step 1
+-> selenium driver + bs4 
+    -> Scrape all the need full data
+    -> and provide a clean data as ouput
+Problem
+    -> LinkedIn does allow user without authenticaiton to view profile
+Solution
+    1. Create a dummy account 
+    2. Use third party api for scraping the website
+        -> https://scrapfly.io/ 200 call/month free    
+        other options are there , didnt explore cause all are the same pay and use.
+    
+going with dummy account.
+didnt go well with the dummy website shit
+
+trying the paid one 
+just finished with basic flask app that take userID from the body and request all the info from the linkedIN and X
+created two endpoints for that
+one for linkedin and another for X
+
+next step create RAG and Context inject based chatbot
