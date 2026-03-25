@@ -55,8 +55,8 @@ Follow these steps to get the project running locally.
 ![Flow-chart](extras/image.png)
 
 ### Here is A short Demo 
-![alt text](extras/demo.gif)
-![LINK](https://drive.google.com/file/d/1i7jXpe1tVnVllQ4w6TW3YeojAchTzf5V/view?usp=sharing)
+![demo_video](extras/demo.gif)
+[▶ Watch Demo Video](https://drive.google.com/file/d/1i7jXpe1tVnVllQ4w6TW3YeojAchTzf5V/view)
 
 ### 1. Clone the Repository
 
