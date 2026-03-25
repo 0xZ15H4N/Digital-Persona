@@ -33,9 +33,9 @@ def build_chunks(profile):
     about_project = ''
 
     for i in projects:
-        about_ =i["description"]
-        start = i["start_date"]
-        title = i["title"]
+        about_ =i["description"] if i != None else "Unknown"
+        start = i["start_date"] if i != None else "Unknown"
+        title = i["title"] if i != None else "Unknown"
         about_project = about_ + " Starting Date " + start + "Title of the project " + title
         
     # -------------------------------
@@ -124,19 +124,19 @@ def build_chunks(profile):
                 continue
 
             clean_activity = clean_text(raw_text, 250)
+            if(interaction!=""):
+                # classify
+                if "shared" in interaction:
+                    action_type = "posted"
 
-            # classify
-            if "shared" in interaction:
-                action_type = "posted"
+                elif "commented" in interaction:
+                    action_type = "commented"
 
-            elif "commented" in interaction:
-                action_type = "commented"
+                elif "liked" in interaction:
+                    action_type = "liked"
 
-            elif "liked" in interaction:
-                action_type = "liked"
-
-            else:
-                action_type = "interacted"
+                else:
+                    action_type = "interacted"
 
 
             # 🔥 individual chunk (IMPORTANT for retrieval)

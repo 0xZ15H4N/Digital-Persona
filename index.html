@@ -995,6 +995,7 @@ img-src 'self' data:;
 
       const data = await res.json();
       vector_id = data.userID;
+      localStorage.setItem("vector_id",vector_id);
 
       updateStep(step1, "Profile data retrieved", "done");
 
@@ -1081,11 +1082,18 @@ img-src 'self' data:;
     showToast("Profile loaded successfully!", "success");
   }
 
-  function resetChat() {
-    vector_id   = null;
+ async function resetChat() {
+    vector_id   = localStorage.getItem("vector_id");
+    console.log(vector_id)
     currentUser = "";
     isLoading   = false;
-
+    response = await fetch(`${MODEL_URL}/model/v1/exit-chat`,{
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ "vector_id": vector_id }),
+    });
+    response = await response.json();
+    localStorage.removeItem("vector_id");
     document.getElementById("chatView").classList.remove("active");
     document.getElementById("landingView").classList.add("active");
 

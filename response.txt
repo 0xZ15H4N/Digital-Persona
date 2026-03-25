@@ -9,7 +9,7 @@
         "location": null
     },
     "experience": null,
-    "url": "https://pe.linkedin.com/in/zishan-ansari-307a58189",
+    "url": "https://kr.linkedin.com/in/Zishan-ansari-307a58189",
     "educations_details": "Guru Gobind Singh Indraprastha University",
     "education": [
         {
@@ -251,7 +251,7 @@
     "first_name": "ZISHAN",
     "last_name": "ANSARI",
     "influencer": false,
-    "timestamp": "2026-03-24T23:28:33.340Z",
+    "timestamp": "2026-03-25T14:02:46.332Z",
     "input": {
         "url": "https://www.linkedin.com/in/zishan-ansari-307a58189/"
     }
