@@ -49,7 +49,7 @@ Follow these steps to get the project running locally.
     ```
 
 ### Documentation
-*   To learn more about the endpoints ![LINK](https://drive.google.com/file/d/1DoVjv-SwdMSXdq2h2m0XfAgmqkO070K9/view?usp=sharing)
+*   To learn more about the endpoints [LINK](https://drive.google.com/file/d/1DoVjv-SwdMSXdq2h2m0XfAgmqkO070K9/view?usp=sharing)
 
 ### Working Flow chart
 ![Flow-chart](extras/image.png)
