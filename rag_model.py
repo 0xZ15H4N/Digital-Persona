@@ -201,7 +201,7 @@ def loadVD():
 @app.route("/model/v1/query",methods=["POST"])
 def ask():
         query = request.get_json()["query"]
-        answer = ask_gemini(vectorstore,query) # ask_question(vectorstore, query) local llama model replace with gemini
+        answer = ask_question(vectorstore, query) # local llama model replace with gemini ask_gemini(vectorstore,query) #
         return {"status":"ok","response":answer},200
 
 
