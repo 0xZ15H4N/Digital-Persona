@@ -55,7 +55,7 @@ Follow these steps to get the project running locally.
 ![Flow-chart](extras/image.png)
 
 ### Here is A short Demo 
-![Video-Demo](extras/demo.mp4)
+<video controls src="extras/demo.mp4" title="![Video-Demo](extras/demo.mp4)"></video>
 
 ### 1. Clone the Repository
 
