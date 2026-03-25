@@ -79,7 +79,10 @@ Install the required Python packages:
 ```sh
 pip install flask flask_cors requests python-dotenv langchain langchain_community langchain_core langchain_chroma sentence-transformers
 ```
-
+Or you can just run
+```sh
+pip install -r requirements.txt
+```
 ### 3. Configure Environment Variables
 
 Create a `.env` file by copying the sample file:
