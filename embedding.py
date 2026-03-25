@@ -54,13 +54,14 @@ def build_chunks(profile):
     company = profile.get("current_company", {})
     current = 1
     work = open("userData/work.txt","w",encoding="utf-8")
-    if company and company.get("name"):
-        if(current == 1):
-            text = f"""Current Job Role of User {name} Organization: {company['name']}"""
-            current +=1
-        else:
-            text = f"""Previous Job Role of User {name} Organization: {company['name']}"""
-        work.write(text)
+    if(company!={}):
+        if company and company.get("name"):
+            if(current == 1):
+                text = f"""Current Job Role of User {name} Organization: {company['name']}"""
+                current +=1
+            else:
+                text = f"""Previous Job Role of User {name} Organization: {company['name']}"""
+            work.write(text)
 
 
     # -------------------------------
@@ -68,38 +69,42 @@ def build_chunks(profile):
     # -------------------------------
     edu = 1
     stud = open("userData/education.txt","w",encoding="utf-8")
-    for edu in profile.get("education", []):
-        title = edu.get("title", "Unknown Institute")
-        start = normalize_date(edu.get("start_year"))
-        end = normalize_date(edu.get("end_year"))
+    educations = profile.get("education", [])
+    if educations !=[]:
+        for edu in educations:
+            title = edu.get("title", "Unknown Institute")
+            start = normalize_date(edu.get("start_year"))
+            end = normalize_date(edu.get("end_year"))
 
-        if(edu==1):
-            text = f"""
-            User {name} currently studies in Institute: {title} Duration: {start}-{end}
-            """
-            edu+=1
-        else:
-            text = f"""
-            User {name} Previouly studied in Institute: {title} Duration: {start}-{end}
-            """
-        stud.write(text)
+            if(edu==1):
+                text = f"""
+                User {name} currently studies in Institute: {title} Duration: {start}-{end}
+                """
+                edu+=1
+            else:
+                text = f"""
+                User {name} Previouly studied in Institute: {title} Duration: {start}-{end}
+                """
+            stud.write(text)
 
 
     # -------------------------------
     # 4. CERTIFICATIONS
     # -------------------------------
     cert_ = open("userData/certificates.txt","w",encoding="utf-8")
-    for cert in profile.get("certifications", []):
-        title = cert.get("title", "")
-        issuer = cert.get("subtitle", "")
-        cred_id = cert.get("credential_id", "")
+    certs = profile.get("certifications", [])
+    if certs!=[] :
+        for cert in certs:
+            title = cert.get("title", "")
+            issuer = cert.get("subtitle", "")
+            cred_id = cert.get("credential_id", "")
 
-        text = f"""
-        User  {name} gained a certificate {title}
-        Issuer: {issuer}
-        Credential ID: {cred_id}
-        """
-        cert_.write(text)
+            text = f"""
+            User  {name} gained a certificate {title}
+            Issuer: {issuer}
+            Credential ID: {cred_id}
+            """
+            cert_.write(text)
 
 
 # -------------------------------
@@ -109,35 +114,35 @@ def build_chunks(profile):
     acti = open("userData/activites.txt","w",encoding="utf-8")
     activities = profile.get("activity", [])
 
+    if(activities!=[]):
+        for act in activities:
+            raw_text = act.get("title", "")
+            interaction = act.get("interaction", "")
+            link = act.get("link", "")
 
-    for act in activities:
-        raw_text = act.get("title", "")
-        interaction = act.get("interaction", "")
-        link = act.get("link", "")
+            if not raw_text:
+                continue
 
-        if not raw_text:
-            continue
+            clean_activity = clean_text(raw_text, 250)
 
-        clean_activity = clean_text(raw_text, 250)
+            # classify
+            if "shared" in interaction:
+                action_type = "posted"
 
-        # classify
-        if "shared" in interaction:
-            action_type = "posted"
+            elif "commented" in interaction:
+                action_type = "commented"
 
-        elif "commented" in interaction:
-            action_type = "commented"
+            elif "liked" in interaction:
+                action_type = "liked"
 
-        elif "liked" in interaction:
-            action_type = "liked"
-
-        else:
-            action_type = "interacted"
+            else:
+                action_type = "interacted"
 
 
-        # 🔥 individual chunk (IMPORTANT for retrieval)
-        text = f"""User {name} has {action_type} {clean_activity} here is the Link: {link}"""
+            # 🔥 individual chunk (IMPORTANT for retrieval)
+            text = f"""User {name} has {action_type} {clean_activity} here is the Link: {link}"""
 
-        acti.write(text)
+            acti.write(text)
 
 
 

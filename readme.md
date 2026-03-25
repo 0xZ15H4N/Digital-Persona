@@ -49,10 +49,13 @@ Follow these steps to get the project running locally.
     ```
 
 ### Documentation
-*   To learn more about the endpoints [LINK](https://drive.google.com/file/d/1DoVjv-SwdMSXdq2h2m0XfAgmqkO070K9/view?usp=sharing)
+*   To learn more about the endpoints ![LINK](https://drive.google.com/file/d/1DoVjv-SwdMSXdq2h2m0XfAgmqkO070K9/view?usp=sharing)
 
 ### Working Flow chart
-![alt text](extras/image.png)
+![Flow-chart](extras/image.png)
+
+### Here is A short Demo 
+![Video-Demo](extras/demo.mp4)
 
 ### 1. Clone the Repository
 
