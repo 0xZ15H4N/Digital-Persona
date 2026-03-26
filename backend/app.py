@@ -97,6 +97,9 @@ def delete_exit():
         return {"status":"failed","reason":str(e)},500
     return {"status":"ok"},200
     
+@app.route("/",methods=["GET"])
+def health():
+    return {"status":"OK"},200
 if __name__ == "__main__":
     print("App running at http://localhost:5000/")
     app.run(debug=False,host="0.0.0.0",port=5000)
