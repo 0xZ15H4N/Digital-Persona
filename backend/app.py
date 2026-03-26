@@ -7,6 +7,7 @@ import os
 from utils.embedding import *
 from utils.rag_model import *
 from functools import wraps
+from langchain_community.embeddings import HuggingFaceEmbeddings
 import shutil
 load_dotenv()
 
@@ -16,11 +17,16 @@ vectorstore = None
 app = Flask(__name__)
 CORS(app)
 
-from langchain_community.embeddings import HuggingFaceEmbeddings
-# one time loading this model
-embedding_model = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
+def get_embedding_model():
+    global embedding_model
+    if embedding_model is None:
+        print("Loading embedding model...")
+        embedding_model = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        )
+        print("Model loaded ✅")
+    return embedding_model
+
 
 def linkedin_pipeline(f):
     @wraps(f)
@@ -54,6 +60,7 @@ def linkedin_pipeline(f):
         with open("samples/linkedINdata.json", "w", encoding="utf-8") as file:
             json.dump(data, file, ensure_ascii=False)
 
+        embedding_model = get_embedding_model()
         # json -> chunk
         build_chunks(data)
         chunks = load_chunks("userData/",embedding_model)
