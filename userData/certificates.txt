@@ -1,41 +1,17 @@
 
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: F2LY50EOPZ2H
+            User  Anshul Bansal gained a certificate Hack&Chill
+            Issuer: GDSC
+            Credential ID: d7477d7c-03b9-40a4-985e-b55d97861953
             
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: YTPWM6PFN9LJ
+            User  Anshul Bansal gained a certificate REIGN Hackathon
+            Issuer: INDIRA GANDHI DELHI TECHNICAL UNIVERSITY FOR WOMEN
+            Credential ID: None
             
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: DMNNSWEPE435
+            User  Anshul Bansal gained a certificate Group Exercise Leadership Certification
+            Issuer: All IPU Community
+            Credential ID: None
             
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: NX3ZH0IPTNUO
-            
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: 1UXGJXXMOZLC
-            
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: VLG32R8MA0QU
-            
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: GTYDRK8V6XPL
-            
-            User  ZISHAN ANSARI gained a certificate EC-Council ETHICAL HACKING ESSENTIAL
-            Issuer: EC-Council
-            Credential ID: 346404
-            
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: 0KJTNM5ZOCSP
-            
-            User  ZISHAN ANSARI gained a certificate Google Certifications
-            Issuer: Google Career Certificates
-            Credential ID: 05KXKHTXCHZZ
+            User  Anshul Bansal gained a certificate Hack Unicorn 2.0
+            Issuer: Hack Unicorn Club
+            Credential ID: None
             

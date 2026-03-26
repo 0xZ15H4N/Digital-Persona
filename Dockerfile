@@ -7,6 +7,8 @@ WORKDIR /app
 # Copy backend code
 COPY backend/ /app/
 COPY requirements.txt /app/
+COPY sample/ /app/
+COPY userData/ /app/
 
 
 # Install dependencies
