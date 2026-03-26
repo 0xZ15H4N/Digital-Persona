@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProfileAI — LinkedIn Intelligence</title>
+<title>Digital Persona — LinkedIn Intelligence</title>
 <!-- <meta http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
@@ -819,7 +819,7 @@ img-src 'self' data:;
     <div class="header-brand">
       <div class="header-icon">✦</div>
       <div>
-        <div class="header-title">ProfileAI</div>
+        <div class="header-title">Digital Persona</div>
         <div class="header-sub">LinkedIn Intelligence</div>
       </div>
     </div>
@@ -951,8 +951,6 @@ img-src 'self' data:;
 <script>
   /* ── CONFIG ──────────────────────────────────────────── */
   const BASE_URL  = "http://localhost:5000";
-  const MODEL_URL = "http://localhost:5001";
-
   /* ── STATE ───────────────────────────────────────────── */
   let vector_id   = null;
   let isLoading   = false;
@@ -994,19 +992,23 @@ img-src 'self' data:;
       });
 
       const data = await res.json();
-      vector_id = data.userID;
-      localStorage.setItem("vector_id",vector_id);
+      vector_id = data.vector_id;
+      localStorage.setItem("vector_id",vector_id); // storing the vector_id in the localStorage of further use
 
       updateStep(step1, "Profile data retrieved", "done");
 
       const step2 = addStep("Building AI context…", "loading");
 
-      await fetch(`${MODEL_URL}/model/v1/loadVD`, {
+      let response = await fetch(`${BASE_URL}/api/v1/loadVD`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "userID" : vector_id }),
+        body: JSON.stringify({ "vector_id" : vector_id }),
       });
-
+      response = response.json();
+      console.log(response)
+      if(response.status === "Failed" || response.status_code == 500){
+        console.log("status failed couldnt load vector db into memory please try again later");
+      }
       updateStep(step2, "AI context ready", "done");
 
       // short pause so user sees both steps complete
@@ -1039,7 +1041,7 @@ img-src 'self' data:;
     const typingId = addTyping();
 
     try {
-      const res = await fetch(`${MODEL_URL}/model/v1/query`, {
+      const res = await fetch(`${BASE_URL}/api/v1/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: text }),
@@ -1087,7 +1089,7 @@ img-src 'self' data:;
     console.log(vector_id)
     currentUser = "";
     isLoading   = false;
-    response = await fetch(`${MODEL_URL}/model/v1/exit-chat`,{
+    response = await fetch(`${BASE_URL}/api/v1/exit-chat`,{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ "vector_id": vector_id }),

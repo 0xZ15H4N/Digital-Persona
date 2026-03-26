@@ -4,17 +4,10 @@ from langchain_core.documents import Document
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_community.llms import Ollama
-import uuid
-from flask import Flask,request
-from flask_cors import CORS
-import shutil
 import google.generativeai as genai
+import uuid
 from dotenv import load_dotenv
 load_dotenv()
-
-app = Flask(__name__)
-CORS(app)
-
 
 # -------------------------------
 # 1. LOAD CHUNKS (your JSON)
@@ -40,8 +33,6 @@ def load_chunks(docs_path):
 
                 except Exception as e:
                     print(f"❌ Skipping {file_path}: {e}")
-
-    print(f"✅ Loaded {len(documents)} files")
     return documents
 
 
@@ -61,8 +52,6 @@ def convert_to_documents(chunks):
         )
 
         documents.append(doc)
-
-    print(f"✅ Converted to {len(documents)} documents")
     return documents
 
 
@@ -76,20 +65,13 @@ def load_db(persist_directory):
     )
 
     if os.path.exists(persist_directory):
-        print("🔍 Checking existing DB...")
         vectorstore = Chroma(
             persist_directory=persist_directory,
             embedding_function=embedding_model
         )
-
         count = vectorstore._collection.count()
-        print(f"📦 Existing DB has {count} documents")
-
         if count > 0:
-            print("✅ Using existing DB")
             return vectorstore
-        else:
-            print("⚠️ Empty DB found → rebuilding...")
 
 
 def create_db(documents, persist_directory="db/chroma_db/"):
@@ -100,14 +82,12 @@ def create_db(documents, persist_directory="db/chroma_db/"):
 
     # 🚀 Create fresh DB
     unique_id = str(uuid.uuid4())
-    print("🚀 Creating new Chroma DB...")
+
     vectorstore = Chroma.from_documents(
         documents=documents,
         embedding=embedding_model,
         persist_directory=persist_directory+unique_id
     )
-
-    print(f"✅ DB created with {len(documents)} documents")
     return unique_id
 
 # -------------------------------
@@ -122,13 +102,10 @@ def ask_gemini(vectorstore,query):
     )
 
     docs = retriever.invoke(query)
-
-    print("\n🔎 Retrieved Chunks:\n")
     # Build context
     context = "\n\n".join([doc.page_content for doc in docs])
     prompt = f"""
     You are an assistant answering questions about a person's profile.
-
      ONLY use the context below. Do not hallucinate.
      Context:
      {context}
@@ -158,7 +135,7 @@ def ask_question(vectorstore, query):
 
     docs = retriever.invoke(query)
 
-    print("\n🔎 Retrieved Chunks:\n")
+
     # Build context
     context = "\n\n".join([doc.page_content for doc in docs])
 
@@ -182,35 +159,3 @@ def ask_question(vectorstore, query):
     return response
 
 
-# -------------------------------
-# 5. MAIN
-# -------------------------------
-vectorstore = None
-@app.route("/model/v1/loadVD",methods=["POST"])
-def loadVD():
-    print("=== LOCAL RAG SYSTEM ===\n")
-    data = request.get_json()
-    directory = "db/chroma_db/" + data["userID"]
-    global vectorstore 
-    vectorstore = load_db(directory)
-    if(vectorstore!=None):
-        return {"status":"ok","response":"vectore DB loaded successfully"},200
-    else:
-        return {"status":"Failed","response":"Internal Server Error"},500
-
-@app.route("/model/v1/query",methods=["POST"])
-def ask():
-        query = request.get_json()["query"]
-        answer = ask_question(vectorstore, query) # local llama model replace with gemini ask_gemini(vectorstore,query) #
-        return {"status":"ok","response":answer},200
-
-
-@app.route("/model/v1/exit-chat",methods=["POST"])
-def delete_exit():
-    vector_id = request.get_json()["vector_id"]
-    shutil.rmtree("db/chroma_db/"+vector_id)
-    return {"status":"ok"},200
-    
-
-if __name__ == "__main__":
-    app.run(port=5001)
