@@ -18,14 +18,12 @@ app = Flask(__name__)
 CORS(app)
 
 def get_embedding_model():
-    global embedding_model
-    if embedding_model is None:
-        print("Loading embedding model...")
         embedding_model = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2"
         )
+        
         print("Model loaded ✅")
-    return embedding_model
+        return embedding_model
 
 
 def linkedin_pipeline(f):
