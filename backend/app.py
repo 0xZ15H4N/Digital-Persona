@@ -10,7 +10,7 @@ from functools import wraps
 import shutil
 load_dotenv()
 
-api_key :str = os.getenv("api_key")
+api_key :str = os.getenv("API_KEY")
 vectorstore = None
 
 app = Flask(__name__)
@@ -99,4 +99,4 @@ def delete_exit():
     
 if __name__ == "__main__":
     print("App running at http://localhost:5000/")
-    app.run(debug=False,port=5000)
+    app.run(debug=False,host="0.0.0.0",port=5000)
