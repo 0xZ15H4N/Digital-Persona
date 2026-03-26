@@ -16,6 +16,12 @@ vectorstore = None
 app = Flask(__name__)
 CORS(app)
 
+from langchain_community.embeddings import HuggingFaceEmbeddings
+# one time loading this model
+embedding_model = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
+
 def linkedin_pipeline(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -50,9 +56,9 @@ def linkedin_pipeline(f):
 
         # json -> chunk
         build_chunks(data)
-        chunks = load_chunks("userData/")
+        chunks = load_chunks("userData/",embedding_model)
         # chunk -> documents
-        documents = convert_to_documents(chunks)
+        documents = convert_to_documents(chunks,embedding_model)
         # documents -> embeddings
         vector_id = create_db(documents)
         g.vector_id = vector_id
@@ -74,7 +80,7 @@ def loadVD():
     if vector_id == None:
         return {"status":"Vector Id not recieved"},500
     directory = "db/chroma_db/" + vector_id
-    vectorstore = load_db(directory)
+    vectorstore = load_db(directory,embedding_model)
     if(vectorstore==None):
         return {"status":"Failed","response":"Internal Server Error"},500
     return {"status":"ok"},200

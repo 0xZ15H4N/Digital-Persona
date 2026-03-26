@@ -8,6 +8,7 @@ import google.generativeai as genai
 import uuid
 from dotenv import load_dotenv
 load_dotenv()
+GEMINI_KEY :str = os.getenv("GEMINI_KEY")
 
 # -------------------------------
 # 1. LOAD CHUNKS (your JSON)
@@ -59,10 +60,7 @@ def convert_to_documents(chunks):
 # 3. CREATE / LOAD CHROMA DB
 # -------------------------------
 
-def load_db(persist_directory):
-    embedding_model = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
+def load_db(persist_directory,embedding_model):
 
     if os.path.exists(persist_directory):
         vectorstore = Chroma(
@@ -74,11 +72,8 @@ def load_db(persist_directory):
             return vectorstore
 
 
-def create_db(documents, persist_directory="db/chroma_db/"):
+def create_db(documents,embedding_model ,persist_directory="db/chroma_db/"):
 
-    embedding_model = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
 
     # 🚀 Create fresh DB
     unique_id = str(uuid.uuid4())
@@ -113,7 +108,6 @@ def ask_gemini(vectorstore,query):
      {query}
      Answer:
     """
-    GEMINI_KEY :str = os.getenv("GEMINI_KEY")
     genai.configure(api_key=GEMINI_KEY)
     # Gemini 1.5 Flash is great for RAG due to speed/cost 
     model = genai.GenerativeModel('gemini-1.5-flash')
