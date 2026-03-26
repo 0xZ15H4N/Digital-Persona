@@ -82,7 +82,7 @@ def loadVD():
 @app.route("/api/v1/chat",methods=["POST"])
 def chat():
     query = request.get_json()["query"]
-    answer = ask_question(vectorstore, query) # local llama model replace with gemini ask_gemini(vectorstore,query) #
+    answer = ask_gemini(vectorstore,query) # local llama model replace with gemini  ask_question(vectorstore, query) 
     return {"status":"ok","response":answer},200
     
 @app.route("/api/v1/exit-chat",methods=["POST"])
