@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy backend code
 COPY backend/ /app/
 COPY requirements.txt /app/
-COPY sample/ /app/sample/
+COPY samples/ /app/samples/
 COPY userData/ /app/userData/
 
 
