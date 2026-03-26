@@ -5,9 +5,9 @@ import json
 from dotenv import load_dotenv
 import os
 import time
-from webscapper import xIdProgress , requestSnapshot
+from backend.webscapper import xIdProgress , requestSnapshot
 from embedding import *
-from rag_model import load_chunks,convert_to_documents,create_db
+from backend.rag_model import load_chunks,convert_to_documents,create_db
 from langchain_core.documents import Document
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
