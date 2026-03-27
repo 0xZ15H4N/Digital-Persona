@@ -21,62 +21,46 @@ def get_embedding_model():
         embedding_model = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2"
         )
-        
         print("Model loaded ✅")
         return embedding_model
 
-
-def linkedin_pipeline(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        body = request.get_json()
-
-        if not body or "userID" not in body:
-            return jsonify({"error": "userID required"}), 400
-
-        user_id = body["userID"]
-
-
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        }
-
-        data = {
-            "input": [{"url": f"https://www.linkedin.com/in/{user_id}/"}]
-        }
-
-
-        response = requests.post(
-            "https://api.brightdata.com/datasets/v3/scrape?dataset_id=gd_l1viktl72bvl7bjuj0&notify=false&include_errors=true",
-            headers=headers,
-            json=data
-        )
-
-        data = response.json()
-
-        with open("samples/linkedINdata.json", "w", encoding="utf-8") as file:
-            json.dump(data, file, ensure_ascii=False)
-
-        embedding_model = get_embedding_model()
-        # json -> chunk
-        build_chunks(data)
-        chunks = load_chunks("userData/",embedding_model)
-        # chunk -> documents
-        documents = convert_to_documents(chunks,embedding_model)
-        # documents -> embeddings
-        vector_id = create_db(documents)
-        g.vector_id = vector_id
-
-        return f(*args, **kwargs)
-
-    return wrapper
     
+embedding_model = get_embedding_model()
 @app.route("/api/v1/requestLDdata",methods=["POST"])
-@linkedin_pipeline
 def main():
-    return {"status":"ok","vector_id":g.vector_id},200
+    body = request.get_json()
 
+    if not body or "userID" not in body:
+        return jsonify({"error": "userID required"}), 400
+    user_id = body["userID"]
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    data = {
+        "input": [{"url": f"https://www.linkedin.com/in/{user_id}/"}]
+    }
+    response = requests.post(
+        "https://api.brightdata.com/datasets/v3/scrape?dataset_id=gd_l1viktl72bvl7bjuj0&notify=false&include_errors=true",
+        headers=headers,
+        json=data
+    )
+    data = response.json()
+    return {"status":"ok","data":data},200
+
+@app.route("/api/v1/createChunks",methods=["POST"])
+def createChunks():
+    data = request.get_json()
+    response = build_chunks(data["data"])
+    return response
+
+@app.route("/api/v1/createDB",methods=["POST"])
+def createDocuments():
+    chunks = request.get_json()["chunks"]
+    documents = convert_to_documents(chunks)
+    vector_id = create_db(documents=documents,embedding_model=embedding_model)
+    print(vector_id)
+    return {"status":"ok","vector_id":vector_id},200
 
 @app.route("/api/v1/loadVD",methods=["POST"])
 def loadVD():
@@ -93,7 +77,7 @@ def loadVD():
 @app.route("/api/v1/chat",methods=["POST"])
 def chat():
     query = request.get_json()["query"]
-    answer = ask_gemini(vectorstore,query) # local llama model replace with gemini  ask_question(vectorstore, query) 
+    answer = ask_gemini(vectorstore,query) # local llama model replace with gemini   ask_gemini(vectorstore,query) ask_question(vectorstore, query)
     return {"status":"ok","response":answer},200
     
 @app.route("/api/v1/exit-chat",methods=["POST"])
