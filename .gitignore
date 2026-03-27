@@ -2,3 +2,4 @@
 .env.old
 db\*
 test
+frontend/digital-persona/node_modules
