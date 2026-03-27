@@ -54,7 +54,7 @@ def build_chunks(profile):
                     user_exp = f"""Previous Job Role of User {name} Organization: {company['name']}"""
         user_info["exp_user"] = user_exp
 
-        edu = 1
+        edu_ = 1
         educations = profile.get("education", [])
         if educations !=[]:
             for edu in educations:
@@ -62,11 +62,11 @@ def build_chunks(profile):
                 start = normalize_date(edu.get("start_year"))
                 end = normalize_date(edu.get("end_year"))
 
-                if(edu==1):
+                if(edu_==1):
                     user_edu = f"""
                     User {name} currently studies in Institute: {title} Duration: {start}-{end}
                     """
-                    edu+=1
+                    edu_+=1
                 else:
                     user_edu = f"""
                     User {name} Previouly studied in Institute: {title} Duration: {start}-{end}
