@@ -32,13 +32,12 @@ def build_chunks(profile):
         about = clean_text(profile.get("about", ""), 400)
         projects = profile.get("projects","")
         about_project = ''
-
+        followers = profile.get("followers", 0)
+        connections = profile.get("connections", 0)
         for i in projects:
             about_ =i["description"] if i != None else "Unknown"
             start = i["start_date"] if i != None else "Unknown"
             title = i["title"] if i != None else "Unknown"
-            followers = profile.get("followers", 0)
-            connections = profile.get("connections", 0)
             about_project = about_ + " Starting Date " + start + "Title of the project " + title
             
         user_info["about_user"] = f"""User name is {name} current location : {location} About the user: {about} here is the profile id of the User {profile_id} User has build some projects {about_project} User {name} has Total of Followers: {followers} and Totol Connections: {connections}"""
@@ -52,10 +51,12 @@ def build_chunks(profile):
                     current +=1
                 else:
                     user_exp = f"""Previous Job Role of User {name} Organization: {company['name']}"""
-        user_info["exp_user"] = user_exp
+            if(user_exp!=""):
+                user_info["exp_user"] = user_exp
 
         edu_ = 1
         educations = profile.get("education", [])
+        lst = []
         if educations !=[]:
             for edu in educations:
                 title = edu.get("title", "Unknown Institute")
@@ -71,7 +72,9 @@ def build_chunks(profile):
                     user_edu = f"""
                     User {name} Previouly studied in Institute: {title} Duration: {start}-{end}
                     """
-        user_info["edu_user"] = user_edu
+                lst.append(user_edu)
+        
+        user_info["edu_user"] = lst
 
         certs = profile.get("certifications", [])
         lst = []
@@ -121,7 +124,7 @@ def build_chunks(profile):
                 text = f"""User {name} has {action_type} {clean_activity} here is the Link: {link}"""
                 lst.append(text)
         user_info["act_user"] = lst    
-        return {"status":"ok","data":user_info},200
+        return {"status":"ok","chunks":user_info},200
     
 
     except Exception as e :

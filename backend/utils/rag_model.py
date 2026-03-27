@@ -11,48 +11,43 @@ load_dotenv()
 GEMINI_KEY :str = os.getenv("GEMINI_KEY")
 
 # -------------------------------
-# 1. LOAD CHUNKS (your JSON)
-# -------------------------------
-
-def load_chunks(docs_path):
-    documents = []
-
-    for root, dirs, files in os.walk(docs_path):
-        for file in files:
-            if file.endswith(".txt"):
-                file_path = os.path.join(root, file)
-
-                try:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        content = f.read().strip()
-
-                        if content:  # skip empty files
-                            documents.append({
-                                "text": content,
-                                "source": file_path
-                            })
-
-                except Exception as e:
-                    print(f"❌ Skipping {file_path}: {e}")
-    return documents
-
-
-# -------------------------------
 # 2. CONVERT TO LANGCHAIN DOCS
 # -------------------------------
 
-def convert_to_documents(chunks):
+def convert_to_documents(user_info):
     documents = []
 
-    for c in chunks:
-        metadata = {k: v for k, v in c.items() if k != "text"}
+    # 🔹 Single text fields
+    if "about_user" in user_info:
+        documents.append(Document(
+            page_content=user_info["about_user"],
+            metadata={"type": "about"}
+        ))
 
-        doc = Document(
-            page_content=c["text"],
-            metadata=metadata
-        )
+    if "exp_user" in user_info:
+        documents.append(Document(
+            page_content=user_info["exp_user"],
+            metadata={"type": "experience"}
+        ))
 
-        documents.append(doc)
+    for edu in user_info.get("edu_user",[]):
+        documents.append(Document(
+            page_content=edu,
+            metadata={"type": "education"}
+        ))
+
+    for cert in user_info.get("cert_user", []):
+        documents.append(Document(
+            page_content=cert,
+            metadata={"type": "certification"}
+        ))
+
+    for act in user_info.get("act_user", []):
+        documents.append(Document(
+            page_content=act,
+            metadata={"type": "activity"}
+        ))
+
     return documents
 
 
