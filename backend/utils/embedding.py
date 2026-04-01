@@ -1,142 +1,182 @@
 import json
 import re
+from typing import Dict, List, Any
+
 
 # -------------------------------
 # UTILITIES
 # -------------------------------
 
-def normalize_date(date_str):
-    if not date_str:
-        return "unknown"
+def normalize_date(date_str: str) -> str:
     try:
+        if not date_str:
+            return "unknown"
         return date_str[:4]
-    except:
+    except Exception:
         return "unknown"
 
-def clean_text(text, max_len=300):
-    if not text:
-        return ""
-    text = re.sub(r"\s+", " ", text)  # remove extra spaces
-    return text.strip()[:max_len]
 
-# -------------------------------
-# MAIN CHUNK BUILDER (IMPROVED)
-# -------------------------------
-
-def build_chunks(profile):
-    user_info = {}
+def clean_text(text: str, max_len: int = 300) -> str:
     try:
-        profile_id = profile.get("id")
-        name = profile.get("name", "Unknown")
-        location = profile.get("city", "Unknown")
-        about = clean_text(profile.get("about", ""), 400)
-        projects = profile.get("projects","")
-        about_project = ''
-        followers = profile.get("followers", 0)
-        connections = profile.get("connections", 0)
-        for i in projects:
-            about_ =i["description"] if i != None else "Unknown"
-            start = i["start_date"] if i != None else "Unknown"
-            title = i["title"] if i != None else "Unknown"
-            about_project = about_ + " Starting Date " + start + "Title of the project " + title
-            
-        user_info["about_user"] = f"""User name is {name} current location : {location} About the user: {about} here is the profile id of the User {profile_id} User has build some projects {about_project} User {name} has Total of Followers: {followers} and Totol Connections: {connections}"""
+        if not text:
+            return ""
+        text = re.sub(r"\s+", " ", text)
+        return text.strip()[:max_len]
+    except Exception:
+        return ""
 
-        company = profile.get("current_company", {})
-        current = 1
-        if(company!={}):
-            if company and company.get("name"):
-                if(current == 1):
-                    user_exp = f"""Current Job Role of User {name} Organization: {company['name']}"""
-                    current +=1
-                else:
-                    user_exp = f"""Previous Job Role of User {name} Organization: {company['name']}"""
-            if(user_exp!=""):
-                user_info["exp_user"] = user_exp
 
-        edu_ = 1
-        educations = profile.get("education", [])
-        lst = []
-        if educations !=[]:
+def safe_get(d: Dict, key: str, default=None):
+    try:
+        return d.get(key, default)
+    except Exception:
+        return default
+
+
+# -------------------------------
+# MAIN CHUNK BUILDER
+# -------------------------------
+
+def build_chunks(profile: Dict[str, Any]) -> Dict[str, Any]:
+    try:
+        if not isinstance(profile, dict):
+            raise ValueError("Invalid profile format")
+
+        user_info = {
+            "about_user":"",
+            "exp_user": "",
+            "edu_user": [],
+            "cert_user": [],
+            "act_user": [],
+            "project_user": []
+        }
+
+        # -------------------------------
+        # BASIC INFO
+        # -------------------------------
+        name = safe_get(profile, "name", "Unknown")
+        profile_id = safe_get(profile, "id", "Unknown")
+        location = safe_get(profile, "city", "Unknown")
+        about = clean_text(safe_get(profile, "about", ""), 400)
+
+        followers = safe_get(profile, "followers", 0)
+        connections = safe_get(profile, "connections", 0)
+
+        user_info["about_user"] = f"User name is {name}" + f"User is located in {location}"+ f"Profile ID is {profile_id}" 
+        user_info["about_user"] += f"About user: {about}" if about else ""
+        user_info["about_user"] += f"User has {followers} followers" + f"User has {connections} connections"
+  
+
+        # -------------------------------
+        # PROJECTS
+        # -------------------------------
+        projects = safe_get(profile, "projects", [])
+
+        if isinstance(projects, list):
+            for proj in projects:
+                if not isinstance(proj, dict):
+                    continue
+
+                title = safe_get(proj, "title", "Unknown Project")
+                desc = clean_text(safe_get(proj, "description", ""), 300)
+                start = safe_get(proj, "start_date", "Unknown")
+
+                chunk = f"Project {title}. Started: {start}. Description: {desc}"
+                user_info["project_user"].append(chunk)
+
+        # -------------------------------
+        # EXPERIENCE
+        # -------------------------------
+        company = safe_get(profile, "current_company", {})
+
+        if isinstance(company, dict) and company.get("name"):
+            user_info["exp_user"]= f"{name} currently works at {company['name']}"
+
+        # -------------------------------
+        # EDUCATION
+        # -------------------------------
+        educations = safe_get(profile, "education", [])
+
+        if isinstance(educations, list):
             for edu in educations:
-                title = edu.get("title", "Unknown Institute")
-                start = normalize_date(edu.get("start_year"))
-                end = normalize_date(edu.get("end_year"))
+                if not isinstance(edu, dict):
+                    continue
 
-                if(edu_==1):
-                    user_edu = f"""
-                    User {name} currently studies in Institute: {title} Duration: {start}-{end}
-                    """
-                    edu_+=1
-                else:
-                    user_edu = f"""
-                    User {name} Previouly studied in Institute: {title} Duration: {start}-{end}
-                    """
-                lst.append(user_edu)
-        
-        user_info["edu_user"] = lst
+                title = safe_get(edu, "title", "Unknown Institute")
+                start = normalize_date(safe_get(edu, "start_year"))
+                end = normalize_date(safe_get(edu, "end_year"))
 
-        certs = profile.get("certifications", [])
-        lst = []
-        if certs!=[] :
+                user_info["edu_user"].append(
+                    f"{name} studied at {title} from {start} to {end}"
+                )
+
+        # -------------------------------
+        # CERTIFICATIONS
+        # -------------------------------
+        certs = safe_get(profile, "certifications", [])
+
+        if isinstance(certs, list):
             for cert in certs:
-                title = cert.get("title", "")
-                issuer = cert.get("subtitle", "")
-                cred_id = cert.get("credential_id", "")
+                if not isinstance(cert, dict):
+                    continue
 
-                text = f"""
-                User  {name} gained a certificate {title}
-                Issuer: {issuer}
-                Credential ID: {cred_id}
-                """
-                lst.append(text)
+                title = safe_get(cert, "title", "")
+                issuer = safe_get(cert, "subtitle", "")
+                cred_id = safe_get(cert, "credential_id", "")
 
-        user_info["cert_user"] = lst
+                if title:
+                    user_info["cert_user"].append(
+                        f"{name} earned certification {title} from {issuer}. Credential ID: {cred_id}"
+                    )
 
-        lst = []
-        activities = profile.get("activity", [])
-        if(activities!=[]):
+        # -------------------------------
+        # ACTIVITIES
+        # -------------------------------
+        activities = safe_get(profile, "activity", [])
+
+        if isinstance(activities, list):
             for act in activities:
-                raw_text = act.get("title", "")
-                interaction = act.get("interaction", "")
-                link = act.get("link", "")
+                if not isinstance(act, dict):
+                    continue
+
+                raw_text = clean_text(safe_get(act, "title", ""), 250)
+                interaction = safe_get(act, "interaction", "")
+                link = safe_get(act, "link", "")
 
                 if not raw_text:
                     continue
 
-                clean_activity = clean_text(raw_text, 250)
-                if(interaction!=""):
-                    # classify
-                    if "shared" in interaction:
-                        action_type = "posted"
+                interaction_lower = interaction.lower()
 
-                    elif "commented" in interaction:
-                        action_type = "commented"
+                if "shared" in interaction_lower:
+                    action_type = "posted"
+                elif "commented" in interaction_lower:
+                    action_type = "commented"
+                elif "liked" in interaction_lower:
+                    action_type = "liked"
+                else:
+                    action_type = "interacted"
 
-                    elif "liked" in interaction:
-                        action_type = "liked"
+                chunk = f"{name} {action_type}: {raw_text}. Link: {link}"
+                user_info["act_user"].append(chunk)
 
-                    else:
-                        action_type = "interacted"
+        # -------------------------------
+        # CLEAN EMPTY STRINGS
+        # -------------------------------
 
+        return {
+            "status": "ok",
+            "chunks": user_info
+        }
 
-                # 🔥 individual chunk (IMPORTANT for retrieval)
-                text = f"""User {name} has {action_type} {clean_activity} here is the Link: {link}"""
-                lst.append(text)
-        user_info["act_user"] = lst    
-        return {"status":"ok","chunks":user_info},200
-    
-
-    except Exception as e :
-        return {"status":"Failed","reason":str(e)},500
-
-
-
+    except Exception as e:
+        return {
+            "status": "failed",
+            "error": str(e)
+        }
 
 
-if __name__ == "__main__":
-    with open("samples/linkedINdata.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    build_chunks(data)
+# -------------------------------
+# TEST
+# -------------------------------
 

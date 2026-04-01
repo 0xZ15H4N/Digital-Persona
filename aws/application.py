@@ -57,7 +57,6 @@ def createChunks():
 @app.route("/api/v1/createDB",methods=["POST"])
 def createDocuments():
     chunks = request.get_json()["chunks"]
-    print(chunks)
     documents = convert_to_documents(chunks)
     vector_id = create_db(documents=documents,embedding_model=embedding_model)
     print(vector_id)
@@ -78,7 +77,7 @@ def loadVD():
 @app.route("/api/v1/chat",methods=["POST"])
 def chat():
     query = request.get_json()["query"]
-    answer =  ask_question(vectorstore, query) # local llama model replace with gemini ask_gemini(vectorstore,query)
+    answer = ask_gemini(vectorstore,query) # local llama model replace with gemini   ask_gemini(vectorstore,query) ask_question(vectorstore, query)
     return {"status":"ok","response":answer},200
     
 @app.route("/api/v1/exit-chat",methods=["POST"])
@@ -98,4 +97,4 @@ def health():
     return {"status":"OK"},200
 if __name__ == "__main__":
     print("App running at http://localhost:5000/")
-    app.run(debug=False,host="0.0.0.0",port=5000)
+    app.run(debug=False,host="0.0.0.0")

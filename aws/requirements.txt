@@ -1,0 +1,10 @@
+Flask
+flask_cors
+langchain_chroma
+langchain_community
+langchain_core
+protobuf
+python-dotenv
+Requests
+google-generativeai
+sentence-transformers
