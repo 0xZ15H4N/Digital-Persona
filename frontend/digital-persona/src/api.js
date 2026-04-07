@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "http://ec2-3-110-143-248.ap-south-1.compute.amazonaws.com";
 
 export async function fetchLinkedInProfile(userID) {
   const res = await fetch(`${BASE_URL}/api/v1/requestLDdata`, {
