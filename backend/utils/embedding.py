@@ -140,7 +140,7 @@ def build_chunks(profile: Dict[str, Any]) -> Dict[str, Any]:
                     continue
 
                 raw_text = clean_text(safe_get(act, "title", ""), 250)
-                interaction = safe_get(act, "interaction", "")
+                interaction = str(safe_get(act, "interaction", "") or "")
                 link = safe_get(act, "link", "")
 
                 if not raw_text:
