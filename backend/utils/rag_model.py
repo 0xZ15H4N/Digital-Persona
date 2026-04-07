@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_community.llms import Ollama
-import google.generativeai as genai
+import google as genai
 import uuid
 from dotenv import load_dotenv
 load_dotenv()
@@ -83,30 +83,37 @@ def create_db(documents,embedding_model ,persist_directory="db/chroma_db/"):
 # -------------------------------
 # 4. QUERY FUNCTION (RAG)
 # -------------------------------
-def ask_gemini(vectorstore,query):
-    # 🔥 Retriever with optional filters
-    retriever = vectorstore.as_retriever(
-        search_kwargs={
-            "k": 5
-        }
-    )
-
+def ask_gemini(vectorstore, query):
+    # 1. Setup Retriever
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
     docs = retriever.invoke(query)
-    # Build context
+    client = genai.Client(api_key=GEMINI_KEY)
+    # 2. Build Context (with a fallback if docs is empty)
+    if not docs:
+        return "I'm sorry, I couldn't find any relevant information in the profile."
+
     context = "\n\n".join([doc.page_content for doc in docs])
+
+    # 3. Build Prompt safely
     prompt = f"""
     You are an assistant answering questions about a person's profile.
-     ONLY use the context below. Do not hallucinate.
-     Context:
-     {context}
-     Question:
-     {query}
-     Answer:
+    ONLY use the context below. Do not hallucinate.
+
+    Context:
+    {context}
+
+    Question:
+    {query}
+
+    Answer:
     """
-    genai.configure(api_key=GEMINI_KEY)
-    # Gemini 1.5 Flash is great for RAG due to speed/cost 
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    response = model.generate_content(prompt)
+
+    # 4. Call Model
+    response = client.models.generate_content(
+    model="gemini-3-flash-preview",
+    contents=prompt
+    )
+
     return response.text
     
 
