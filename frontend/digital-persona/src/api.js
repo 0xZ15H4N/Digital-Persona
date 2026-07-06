@@ -1,4 +1,4 @@
-const BASE_URL = "http://ec2-3-110-209-221.ap-south-1.compute.amazonaws.com/"
+const BASE_URL = "https://api.repox.me"
 
 export async function fetchLinkedInProfile(userID) {
   const res = await fetch(`${BASE_URL}/api/v1/requestLDdata`, {
