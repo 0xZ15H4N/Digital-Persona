@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_community.llms import Ollama
-import google as genai
+from google import genai
 import uuid
 from dotenv import load_dotenv
 load_dotenv()
